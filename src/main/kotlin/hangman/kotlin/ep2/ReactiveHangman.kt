@@ -22,7 +22,7 @@ class ReactiveHangman(val secretWord: String, private val inputStream: Subject<C
             .scan(maxLife) { life, (secretLetters, c) ->
                 if (c in secretWord) life
                 else if (c in secretLetters) life
-                else life -1
+                else life - 1
             }
 
     val statusStream = Observables.zip(lifeLeftStream, knownSecretWordStream) { life, knownSecretWord ->
