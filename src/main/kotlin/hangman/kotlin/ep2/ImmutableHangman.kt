@@ -1,14 +1,12 @@
 package hangman.kotlin.ep2
 
-import kotlin.collections.LinkedHashSet
+class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLetters: Set<Char> = linkedSetOf()) {
 
-class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLetters: Set<String> = LinkedHashSet()) {
+    val secretWordLetters = secretWord.toCharArray()
 
-    val secretWordLetters = secretWord.toCharArray().map { it.toString() }
-
-    val knownSecretWord: String = secretWordLetters.map {
+    val knownSecretWord = secretWordLetters.map {
         if (it in selectedLetters) it
-        else "_"
+        else '_'
     }.joinToString("")
 
     val status =
@@ -24,12 +22,10 @@ class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLe
 
     fun isInProgress() = !isGameOver()
 
-    fun play(chars: Char): ImmutableHangman {
-
-        val c = chars.toString()
+    fun play(c: Char): ImmutableHangman {
 
         if (c !in selectedLetters) {
-            if (isMatchingSecretWord(c))
+            if (c !in secretWordLetters)
                 return ImmutableHangman(secretWord, life - 1, selectedLetters + c)
             else
                 return ImmutableHangman(secretWord, life, selectedLetters + c)
@@ -37,8 +33,6 @@ class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLe
 
         return this
     }
-
-    private fun isMatchingSecretWord(c: String) = c !in secretWordLetters
 
     enum class Status(val text: String) {
 

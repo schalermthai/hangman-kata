@@ -1,13 +1,12 @@
-package deans4j.hangman.kotlin
+package hangman.kotlin.ep2
 
-import hangman.kotlin.ep2.ImmutableHangman
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 
 
-class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> = ReplaySubject.create<Char>()) {
+class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> = ReplaySubject.create()) {
 
     val states: Observable<ImmutableHangman>
 
@@ -18,7 +17,6 @@ class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> 
 
             input.scan(game) { g, c ->
                 val newState = g.play(c)
-
                 e.onNext(newState)
 
                 if (newState.isGameOver()) {
@@ -28,7 +26,7 @@ class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> 
 
                 return@scan newState
             }.subscribe()
-        };
+        }
     }
 
     fun play(c: Char) {

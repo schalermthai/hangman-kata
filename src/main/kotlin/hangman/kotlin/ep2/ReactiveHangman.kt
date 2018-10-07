@@ -1,4 +1,4 @@
-package deans4j.hangman.kotlin
+package hangman.kotlin.ep2
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
