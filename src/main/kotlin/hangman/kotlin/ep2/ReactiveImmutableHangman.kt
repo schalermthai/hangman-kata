@@ -23,8 +23,7 @@ class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> 
             return@scan newState
         }.subscribe()
     }
-
-
+    
     fun play(c: Char) {
         input.onNext(c)
         this
