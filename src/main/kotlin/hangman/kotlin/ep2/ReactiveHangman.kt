@@ -7,23 +7,23 @@ import io.reactivex.subjects.Subject
 
 class ReactiveHangman(val secretWord: String, private val inputStream: Subject<Char> = ReplaySubject.create<Char>(), maxLife: Int = MAX_LIFE) {
 
-    val lifeLeftStream = inputStream.scan(maxLife) { life, c ->
-        if (c in secretWord) life
-        else life - 1
-    }
-
-    val selectedLettersStream = inputStream.scan<Set<String>>(linkedSetOf()) { selectedLetters, c ->
-        selectedLetters + c.toString()
+    val selectedLettersStream = inputStream.scan<Set<Char>>(linkedSetOf()) { selectedLetters, c ->
+        selectedLetters + c
     }
 
     val knownSecretWordStream = selectedLettersStream.map { selectedLetters ->
-        secretWord
-                .map { it.toString() }
-                .map {
+        secretWord.map {
                     if (it in selectedLetters) it
-                    else "_"
+                    else '_'
         }.joinToString("")
     }
+
+    val lifeLeftStream = Observables.zip(selectedLettersStream, inputStream)
+            .scan(maxLife) { life, (secretLetters, c) ->
+                if (c in secretWord) life
+                else if (c in secretLetters) life
+                else life -1
+            }
 
     val statusStream = Observables.zip(lifeLeftStream, knownSecretWordStream) { life, knownSecretWord ->
         if (life > 0 && knownSecretWord == secretWord) Status.WON
@@ -39,7 +39,7 @@ class ReactiveHangman(val secretWord: String, private val inputStream: Subject<C
         }.subscribe()
     }
 
-    data class State(val status: String, val lifeLeft: Int, val selectedLetters: Set<String>, val knownSecretWord: String, val secretWordLength: Int)
+    data class State(val status: String, val lifeLeft: Int, val selectedLetters: Set<Char>, val knownSecretWord: String, val secretWordLength: Int)
 
     enum class Status(val text: String) {
         WON("won"), LOSE("lose"), INPROGRESS("in-progress")
