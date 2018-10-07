@@ -35,12 +35,11 @@ class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLe
     }
 
     enum class Status(val text: String) {
-
         WON("won"), LOSE("lose"), INPROGRESS("in-progress")
     }
 
     override fun toString(): String {
-        return "hangman.java.ep2.ImmutableHangman(status=${status},selectedLetters=$selectedLetters, lifeLeft=$life, secretWordLength=${secretWord.length}, knownSecretWord='$knownSecretWord')"
+        return "ImmutableHangman(status=${status},selectedLetters=$selectedLetters, lifeLeft=$life, secretWordLength=${secretWord.length}, knownSecretWord='$knownSecretWord')"
     }
 }
 
