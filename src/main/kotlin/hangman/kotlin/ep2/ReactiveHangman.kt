@@ -5,7 +5,7 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 
-class ReactiveHangman(val secretWord: String, private val inputStream: Subject<Char> = ReplaySubject.create<Char>(), maxLife: Int = MAX_LIFE) {
+class ReactiveHangman(val secretWord: String, private val inputStream: Subject<Char> = ReplaySubject.create(), maxLife: Int = MAX_LIFE) {
 
     val selectedLettersStream = inputStream.scan<Set<Char>>(linkedSetOf()) { selectedLetters, c ->
         selectedLetters + c
