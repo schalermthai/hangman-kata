@@ -5,29 +5,25 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 
-
 class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> = ReplaySubject.create()) {
 
-    val states: Observable<ImmutableHangman>
+    val states = Observable.create<ImmutableHangman> {e ->
+        val game = ImmutableHangman(secretWord)
+        e.onNext(game)
 
-    init {
-        states = Observable.create {e ->
-            val game = ImmutableHangman(secretWord)
-            e.onNext(game)
+        input.scan(game) { g, c ->
+            val newState = g.play(c)
+            e.onNext(newState)
 
-            input.scan(game) { g, c ->
-                val newState = g.play(c)
-                e.onNext(newState)
+            if (newState.isGameOver()) {
+                e.onComplete()
+                return@scan g
+            }
 
-                if (newState.isGameOver()) {
-                    e.onComplete()
-                    return@scan g
-                }
-
-                return@scan newState
-            }.subscribe()
-        }
+            return@scan newState
+        }.subscribe()
     }
+
 
     fun play(c: Char) {
         input.onNext(c)
@@ -35,7 +31,7 @@ class ReactiveImmutableHangman(val secretWord: String, val input: Subject<Char> 
     }
 
     companion object {
-        fun reactiveHangman(secretWord: String, input: Subject<Char>): Observable<ImmutableHangman> = ReactiveImmutableHangman(secretWord, input).states;
+        fun reactiveHangman(secretWord: String, input: Subject<Char>) = ReactiveImmutableHangman(secretWord, input).states;
     }
 }
 

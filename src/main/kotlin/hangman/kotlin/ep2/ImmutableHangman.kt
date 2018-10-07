@@ -2,9 +2,7 @@ package hangman.kotlin.ep2
 
 class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLetters: Set<Char> = linkedSetOf()) {
 
-    val secretWordLetters = secretWord.toCharArray()
-
-    val knownSecretWord = secretWordLetters.map {
+    val knownSecretWord = secretWord.map {
         if (it in selectedLetters) it
         else '_'
     }.joinToString("")
@@ -25,7 +23,7 @@ class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLe
     fun play(c: Char): ImmutableHangman {
 
         if (c !in selectedLetters) {
-            if (c !in secretWordLetters)
+            if (c !in secretWord)
                 return ImmutableHangman(secretWord, life - 1, selectedLetters + c)
             else
                 return ImmutableHangman(secretWord, life, selectedLetters + c)
@@ -44,7 +42,7 @@ class ImmutableHangman(val secretWord: String, val life: Int = 7, val selectedLe
 }
 
 fun main(args : Array<String>) {
-    var game = ImmutableHangman("bigbear")
+    val game = ImmutableHangman("bigbear")
 
     val letters = listOf('b', 'i', 'g', 'b', 'e', 'a', 'r')
 
