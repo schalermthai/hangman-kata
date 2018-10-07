@@ -7,12 +7,12 @@ import io.reactivex.subjects.Subject
 
 class ReactiveHangman(val secretWord: String, private val inputStream: Subject<Char> = ReplaySubject.create<Char>(), maxLife: Int = MAX_LIFE) {
 
-    val lifeLeftStream = inputStream.scan(maxLife) { life, c->
+    val lifeLeftStream = inputStream.scan(maxLife) { life, c ->
         if (c in secretWord) life
         else life - 1
     }
 
-    val selectedLettersStream = inputStream.scan<Set<String>>(LinkedHashSet()) { selectedLetters, c ->
+    val selectedLettersStream = inputStream.scan<Set<String>>(linkedSetOf()) { selectedLetters, c ->
         selectedLetters + c.toString()
     }
 
